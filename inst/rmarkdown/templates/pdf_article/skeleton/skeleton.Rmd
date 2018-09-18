@@ -1,0 +1,29 @@
+---
+title: "Template for contribution to an hypothetical statistical journal with dynamic content"
+subtitle: "PDF output"
+author: "Author names"
+date: "`r Sys.Date()`"
+output: epiR::pdf_article
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library(epiR)
+# invalidate cache when the package version changes
+knitr::opts_chunk$set(tidy = FALSE)
+options(htmltools.dir.version = FALSE)
+```
+
+# Introduction
+
+The goal of this package is to produce both PDF and HTML output with similar styles from the same R Markdown document.
+
+# References
+
+References can be displayed as margin notes for HTML output. For example, we can cite R here [@R-base].
+
+```{r bib, include=FALSE}
+# create a bib file for the R packages used in this document
+knitr::write_bib('base', file = 'skeleton.bib')
+```
