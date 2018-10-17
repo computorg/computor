@@ -19,6 +19,12 @@ knitr::opts_chunk$set(echo = TRUE,
 
 
 ```{r}
+if (!requireNamespace(c("microbenchmark", "randomForest", "ranger"), quietly = TRUE)) {
+    install.packages(c("microbenchmark", "randomForest", "ranger"))}
+```
+
+
+```{r}
 library(microbenchmark)
 ncores <- 3
 ```
