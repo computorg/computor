@@ -9,7 +9,10 @@ author:
     affiliation_url: https://math.univ-toulouse.fr
 date: "`r Sys.Date()`"
 runtime: shiny_prerendered
-output: radix::radix_article
+output: 
+  radix::radix_article:
+    toc: true
+    toc_depth: 3
 header-includes:
 - \newcommand{\cH}{\mathcal{H}}
 - \renewcommand{\P}{\mathbb{P}}
@@ -152,33 +155,22 @@ abline(a = 0, b = 1, lty = 2)
 **TODO: interactive plot with gene names listed**
 
 
-### 2 - (basic) User interaction (TODO!)
-
-**TODO: shiny app within radix document**
-
-Example for Radix integration avaliable here https://github.com/rstudio/radix/blob/master/inst/examples/radix-interactive-document.Rmd
-but I can't get it to work yet.
-
-To run the shiny app in a standalone document, do
-
-```{r, eval=FALSE}
-runApp('tests/post-hoc/volcano-plot.R')
-```
+### 2 - User interaction
 
 ```{r volcano-prep}
 library("plotly")
 dex[["logp"]] <- log10(dex[["p.value"]])
-dex[["id"]] <- rownames(dex)
 datly <- subset(dex, (abs(meanDiff) > 0.3) | (p.value < 0.01))
+datly <- round(datly, 2)
+datly[["id"]] <- rownames(datly)
 ```
 
 ```{r volcano-ui, echo=FALSE}
-titlePanel("Post hoc confidence bounds for volcano plots")
 wellPanel(h2("Selected genes"),
-                   h3("Confidence statement"),
-                   textOutput("bound"),
-                   h3("List"),
-                   textOutput("selection"))
+          h3("Confidence statement"),
+          textOutput("bound"),
+          h3("List"),
+          dataTableOutput("selection"))
 wellPanel(plotlyOutput("plot"))
 ```
 
@@ -188,12 +180,11 @@ output$plot <- renderPlotly({
   rg <- max(abs(rg))*c(-1,1)
   
   d <- event_data("plotly_selected")
-  print(d)
+#  print(d)
   mm <- match(d$key, datly[["id"]])
-  print(mm)
+#  print(mm)
   selected <- numeric(nrow(datly))
   selected[mm] <- 1
-  #table(selected)
   datly$selected <- factor(selected)
   
   library("ggplot2")
@@ -214,7 +205,6 @@ output$bound <- renderText({
   if (is.null(d)) {
     mm <- which(datly[["adjp.BH"]] <= alpha)
   } else {
-    str(d$key)
     mm <- match(d$key, datly[["id"]])
     if (!all(is.na(mm))) {
       Vbar <- posthocBySimes(datly[["p.value"]], mm, alpha)
@@ -223,24 +213,22 @@ output$bound <- renderText({
       msg <- sprintf("%s (FDP %s %s)", msg, ifelse(fdp==0, "=", "<="), fdp)
     }
   }
-  # msg <- paste(msg, str(d), collapse = "\n")
   msg
 })
 
-output$selection <- renderText({
+
+output$selection <- renderDataTable({
+#output$selection <- renderTable({
   d <- event_data("plotly_selected")
-  msg <- "Nothing to show here yet."
-  if (!is.null(d)) {
-    msg <- d$key
+  if (is.null(d)) {
+    mm <- which(datly[["adjp.BH"]] <= alpha)
+  } else {
+    mm <- match(d$key, datly[["id"]])
   }
-  msg
-  # todo: a table!
-  # ww <- which(adjp.BH <= alpha)
-  # o <- order(dex[["p.value"]])
-  # odex <- dex[head(o, nBH), ]
-  # paged_table(odex, options = list(rows.print = 20))
-  # 
-})
+  sdat <- datly[mm, ]
+  o <- order(sdat[["p.value"]])
+  sdat[o, ]
+}, options = list(pageLength = 5))
 ```
 
 
