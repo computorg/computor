@@ -1,7 +1,7 @@
 ---
 title: "Post hoc inference for multiple two-sample tests"
 description: |
-    A new article created using the Radix format.
+    An example of methodological contribution with some user interaction.
 author:
   - name: Pierre Neuvial
     url: https://math.univ-toulouse.fr/~pneuvial
@@ -37,7 +37,10 @@ That is, there exists an event of probability $1-\alpha$ such that *for any subs
 
 This may seem an ambitious goal. @GS2011 have proposed a general framework based on closed testing in order to build such bounds. In particular, they provide such a bound in the case where the tested hypotheses satisfy a classical positive dependence assumption called PRDS (see @sarkar98probability for a formal definition). This work has been extended by @blanchard:posthoc, who showed that such post hoc bounds can be obtained as a consequence of the control of a multiple testing risk called the Joint Error Rate (JER). In particular, under PRDS, they recover the bound of @GS2011 under PRDS as a corollary of the Simes inequality ( @simes86improved), a probabilistic inequality which plays an important role in multiple testing. @simes86improved. 
 
-An intrinsic limitation of post hoc bounds based on such a probabilistic control is that it is bound to *assume* a particular form of dependence to hold. As discussed in @blanchard:posthoc, this dependency may not always hold, and when it holds, the resulting bound may be overly conservative. To address this issue, @blanchard:posthoc have shown how JER control (and subsequent post hoc bounds) can be obtained under a generic randomization hypothesis. The goal of this note is to show how this randomization principle can be used in practice in the case of two-sample tests. 
+An intrinsic limitation of post hoc bounds based on such a probabilistic control is that it is bound to *assume* a particular form of dependence to hold. As discussed in @blanchard:posthoc, this dependency may not always hold, and when it holds, the resulting bound may be overly conservative. To address this issue, @blanchard:posthoc have shown how JER control (and subsequent post hoc bounds) can be obtained under a generic randomization hypothesis. The goal of this note is twofold:
+
+- to illustrate the general interest of such post-hoc bounds, by showing that they make it possible to 
+- to show how the above-mentioned randomization principle can be used in practice to get more powerful bounds in the specific case of two-sample tests for differential gene expression studies. 
 
 ### Permutation-based JER control for multiple two-sample tests
 
@@ -50,13 +53,11 @@ library("sansSouci")
 library("cherry")
 ```
 
-
-
 ## A multiple two-sample testing problem
 
 ### Data
 
-Differential gene expression between two cancer subtypes. TODO: more thorough description.
+Differential gene expression between two cancer subtypes. **TODO: more thorough description.**
 
 - Link to the data (to be placed in a 'data' folder)
 
@@ -79,7 +80,7 @@ table(colnames(dat))
 
 ### Classical differential analysis
 
-We start with a simple Welch test for differential expression for each gene. (This can be done quickly using the `sansSouci::rowWelchTests` function).
+We start with a simple Welch test for differential expression for each gene. This can be done e.g. using the `sansSouci::rowWelchTests` function:
 
 ```{r}
 rwt <- rowWelchTests(dat, colnames(dat))
@@ -100,6 +101,7 @@ inputPanel(
 plotOutput("hist")
 ```
 
+
 ```{r, hist-server, context="server"}
 output$hist <- renderPlot({
   hist(dex$p.value, probability = TRUE, breaks = as.numeric(input$n_breaks),
@@ -111,21 +113,14 @@ As expected, the distribution presents a large number of small $p$-values (which
 
 #### Multiple testing correction: False Discovery Rate control
 
+The state of the art approach to large-scale multiple testing is to control the False Discovery Rate (FDR), which is the expected proportion of wrongly selected genes (false positives) among all selected genes @benjamini95controlling. The most widely used method to control this risk is the Benjamini-Hochberg (BH) procedure, which has been shown to control the FDR when the hypotheses corresponding to the non-differentially expressed genes are independent @benjamini95controlling or satisfy the PRDS assumption @benjamini01control.
 
-```{r}
+```{r bh}
 alpha <- 0.1
 adjp.BH <- p.adjust(pval, method = "BH")
 nBH <- sum(adjp.BH <= alpha)
 dex$adjp.BH <- adjp.BH
 ```
-
-```{r bonferroni, eval=FALSE, echo=FALSE}
-adjp.Bonf <- p.adjust(pval, method = "bonferroni")
-nB <- sum(adjp.Bonf <= alpha)
-```
-
-
-In this data set, `r nBH` genes are called differentially expressed at a False Discovery Rate (FDR) of $\alpha = `r alpha`$. 
 
 ```{r, layout="l-body-outset"}
 library("rmarkdown")
@@ -134,6 +129,11 @@ o <- order(dex[["p.value"]])
 odex <- dex[head(o, nBH), ]
 paged_table(odex, options = list(rows.print = 20))
 ```
+
+
+#### Caveat: interpretation of FDR control
+
+In this data set, `r nBH` genes are called differentially expressed at a False Discovery Rate (FDR) of $\alpha = `r alpha`$. Importantly, this does not mean that the proportion of false positives in this list, which is called the FDP for False Discovery Proportion, is less than `r nBH*alpha`. Indeed, the FDP is a *random* quantity, so we can only have a probabilistic control on this quantity. The FDR is the *expected* FDP, that is, the average FDP over hypothetical replications of the same genomic experiment and $p$-value thresholding procedure. 
 
 
 ## Analysis using post hoc bounds
@@ -157,6 +157,10 @@ abline(a = 0, b = 1, lty = 2)
 
 ### 2 - User interaction
 
+The usefulness of post hoc bounds for interactive data analysis can be illustrated by the volcano plot below. In this plot, each gene is represented as a data point in the (group difference, signficance space). More precisely, we plot the $p$-value of each gene (using a $-log_10$ scale, so that interesting genes are at the top), as a function of the difference between the mean expression level in both groups.
+
+Below, the default selection consists of the  `r nBH` genes are called differentially expressed at a False Discovery Rate (FDR) of $\alpha = `r alpha`$. If one is interested 
+
 ```{r volcano-prep}
 library("plotly")
 dex[["logp"]] <- log10(dex[["p.value"]])
@@ -166,12 +170,14 @@ datly[["id"]] <- rownames(datly)
 ```
 
 ```{r volcano-ui, echo=FALSE}
-wellPanel(h2("Selected genes"),
+wellPanel(h2("Volcano plot"),
+          plotlyOutput("plot"))
+wellPanel(#h2("Gene selection"),
           h3("Confidence statement"),
-          textOutput("bound"),
-          h3("List"),
-          dataTableOutput("selection"))
-wellPanel(plotlyOutput("plot"))
+          textOutput("bound"))
+          # h3("List"),
+          # dataTableOutput("selection")
+
 ```
 
 ```{r volcano-server, context="server"}
@@ -181,7 +187,11 @@ output$plot <- renderPlotly({
   
   d <- event_data("plotly_selected")
 #  print(d)
-  mm <- match(d$key, datly[["id"]])
+  if (is.null(d)) {
+    mm <- which(datly[["adjp.BH"]] <= alpha)
+  } else {
+    mm <- match(d$key, datly[["id"]])
+  }
 #  print(mm)
   selected <- numeric(nrow(datly))
   selected[mm] <- 1
@@ -190,29 +200,29 @@ output$plot <- renderPlotly({
   library("ggplot2")
   p <- ggplot(datly, aes(x = meanDiff, y = -logp, 
                          colour = selected, key = id))
-  p <- p + geom_point(alpha = 0.2)
-  p <- p + xlim(range(datly$meanDiff))
-  p <- p + ylim(c(0, max(-datly$logp)))
+  p <- p + geom_point(alpha = 0.2) +
+    xlim(range(datly$meanDiff)) + ylim(c(0, max(-datly$logp))) +
+    scale_colour_discrete(name = "", breaks = c("0", "1"),
+                          labels = c("not selected", "selected"))  
   ggplotly(p)  %>% 
     config(displayModeBar = F) %>%
     layout(dragmode = "select",
            xaxis = list(range = rg))
-})
+}) 
 
 output$bound <- renderText({
-  d <- event_data("plotly_selected")
   msg <- sprintf("Default selection: BH procedure at level %s for FDR control", alpha)
+  d <- event_data("plotly_selected")
+  mm <- numeric(0L)
   if (is.null(d)) {
     mm <- which(datly[["adjp.BH"]] <= alpha)
   } else {
     mm <- match(d$key, datly[["id"]])
-    if (!all(is.na(mm))) {
-      Vbar <- posthocBySimes(datly[["p.value"]], mm, alpha)
-      msg <- sprintf("At least %s true positives among %s selected genes", Vbar, nrow(d))
-      fdp <- round(1 - Vbar/nrow(d), 2)
-      msg <- sprintf("%s (FDP %s %s)", msg, ifelse(fdp==0, "=", "<="), fdp)
-    }
   }
+  Vbar <- posthocBySimes(datly[["p.value"]], mm, alpha)
+  msg <- sprintf("%s\nAt least %s true positives among %s selected genes", msg, Vbar, length(mm))
+  fdp <- round(1 - Vbar/length(mm), 2)
+  msg <- sprintf("%s (FDP %s %s)", msg, ifelse(fdp==0, "=", "<="), fdp)
   msg
 })
 
