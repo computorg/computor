@@ -24,35 +24,6 @@ bibliography: sansSouci.bib
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Context
-
-### Post hoc inference
-
-Post hoc inference has been introduced by @GS2011. It builds on multiple testing theory to build constructing confidence bounds on arbitrary subsets of hypotheses. Formally, let $\cH$ be a set of $m$ null hypotheses, and $\cH_0$ be the (unknown) subset of true null hypotheses. Then for $S \subset \cH$, $|S \cap \cH_0|$ is the number of false positives in $S$. With this notation, $\oV$ is a post hoc upper bound at confidence level $\alpha$ if
-
-$$\P(\forall S \subset \cH,  \quad |S \cap \cH_0| \leq \oV(S)) \geq 1-\alpha$$
-That is, there exists an event of probability $1-\alpha$ such that *for any subset $S$ of hypotheses* -possibly data-driven or cherry-picked by a user-, the number of false positives in $S$ is less than $V(S)$.
-
-**[TODO: By-product: Confidence envelopes from the FDP]**
-
-This may seem an ambitious goal. @GS2011 have proposed a general framework based on closed testing in order to build such bounds. In particular, they provide such a bound in the case where the tested hypotheses satisfy a classical positive dependence assumption called PRDS (see @sarkar98probability for a formal definition). This work has been extended by @blanchard:posthoc, who showed that such post hoc bounds can be obtained as a consequence of the control of a multiple testing risk called the Joint Error Rate (JER). In particular, under PRDS, they recover the bound of @GS2011 under PRDS as a corollary of the Simes inequality ( @simes86improved), a probabilistic inequality which plays an important role in multiple testing. @simes86improved. 
-
-An intrinsic limitation of post hoc bounds based on such a probabilistic control is that it is bound to *assume* a particular form of dependence to hold. As discussed in @blanchard:posthoc, this dependency may not always hold, and when it holds, the resulting bound may be overly conservative. To address this issue, @blanchard:posthoc have shown how JER control (and subsequent post hoc bounds) can be obtained under a generic randomization hypothesis. The goal of this note is twofold:
-
-- to illustrate the general interest of such post-hoc bounds, by showing that they make it possible to 
-- to show how the above-mentioned randomization principle can be used in practice to get more powerful bounds in the specific case of two-sample tests for differential gene expression studies. 
-
-### Permutation-based JER control for multiple two-sample tests
-
-**[TODO:description of the methods]**
-
-The methods discussed above are implemented in the R package `sansSouci`.  The methods of @GS2011 are implemented in the R package `cherry`.
-
-```{r sanssouci}
-library("sansSouci")
-library("cherry")
-```
-
 ## A multiple two-sample testing problem
 
 ### Data
@@ -83,7 +54,7 @@ table(colnames(dat))
 We start with a simple Welch test for differential expression for each gene. This can be done e.g. using the `sansSouci::rowWelchTests` function:
 
 ```{r}
-rwt <- rowWelchTests(dat, colnames(dat))
+rwt <- sansSouci::rowWelchTests(dat, colnames(dat))
 class(rwt) <- "list"
 dex <- as.data.frame(rwt)
 rm(rwt)
@@ -122,7 +93,7 @@ nBH <- sum(adjp.BH <= alpha)
 dex$adjp.BH <- adjp.BH
 ```
 
-```{r, layout="l-body-outset"}
+```{r, layout="l-body-outset", echo=FALSE}
 library("rmarkdown")
 ww <- which(adjp.BH <= alpha)
 o <- order(dex[["p.value"]])
@@ -136,19 +107,62 @@ paged_table(odex, options = list(rows.print = 20))
 In this data set, `r nBH` genes are called differentially expressed at a False Discovery Rate (FDR) of $\alpha = `r alpha`$. Importantly, this does not mean that the proportion of false positives in this list, which is called the FDP for False Discovery Proportion, is less than `r nBH*alpha`. Indeed, the FDP is a *random* quantity, so we can only have a probabilistic control on this quantity. The FDR is the *expected* FDP, that is, the average FDP over hypothetical replications of the same genomic experiment and $p$-value thresholding procedure. 
 
 
+## From FDR control to post hoc inference
+
+### Post hoc inference
+
+Post hoc inference has been introduced by @GS2011. It builds on multiple testing theory to build constructing confidence bounds on arbitrary subsets of hypotheses. Formally, let $\cH$ be a set of $m$ null hypotheses, and $\cH_0$ be the (unknown) subset of true null hypotheses. Then for $S \subset \cH$, $|S \cap \cH_0|$ is the number of false positives in $S$. With this notation, $\oV$ is a post hoc upper bound at confidence level $\alpha$ if
+
+$$\P(\forall S \subset \cH,  \quad |S \cap \cH_0| \leq \oV(S)) \geq 1-\alpha$$
+That is, there exists an event of probability $1-\alpha$ such that *for any subset $S$ of hypotheses* -possibly data-driven or cherry-picked by a user-, the number of false positives in $S$ is less than $V(S)$.
+
+**[TODO: By-product: Confidence envelopes from the FDP]**
+
+This may seem an ambitious goal. @GS2011 have proposed a general framework based on closed testing in order to build such bounds. In particular, they provide such a bound in the case where the tested hypotheses satisfy a classical positive dependence assumption called PRDS (see @sarkar98probability for a formal definition). This work has been extended by @blanchard:posthoc, who showed that such post hoc bounds can be obtained as a consequence of the control of a multiple testing risk called the Joint Error Rate (JER). In particular, under PRDS, they recover the bound of @GS2011 under PRDS as a corollary of the Simes inequality ( @simes86improved), a probabilistic inequality which plays an important role in multiple testing. @simes86improved. 
+
+An intrinsic limitation of post hoc bounds based on such a probabilistic control is that it is bound to *assume* a particular form of dependence to hold. As discussed in @blanchard:posthoc, this dependency may not always hold, and when it holds, the resulting bound may be overly conservative. To address this issue, @blanchard:posthoc have shown how JER control (and subsequent post hoc bounds) can be obtained under a generic randomization hypothesis. The goal of this note is twofold:
+
+- to illustrate the general interest of such post-hoc bounds, by showing that they make it possible to 
+- to show how the above-mentioned randomization principle can be used in practice to get more powerful bounds in the specific case of two-sample tests for differential gene expression studies. 
+
+### Permutation-based JER control for multiple two-sample tests
+
+**[TODO:description of the methods]**
+
+### R packages used in this vignette
+
+The methods discussed above are implemented in the R package `sansSouci`.  The methods of @GS2011 are implemented in the R package `cherry`.
+
+```{r packages}
+library("sansSouci")
+library("cherry")
+library("shiny")
+```
+
+
 ## Analysis using post hoc bounds
+
+### 0 - Gene sets of interest
+
+TODO
+
+- pre-defined genes sets (mapped to gene identifiers in the data set...)
+- table with bound on the FDP in each gene set
+
+Take home message: validity of the bounds even if one adds more gene sets.
 
 ### 1 - Confidence envelopes
 
 ```{r}
 stat <- dex[["statistic"]]
+stat <- qnorm(dex[["p.value"]])
 m <- length(stat)
 o <- order(stat, decreasing = TRUE)
 thr <- SimesThresholdFamily(m)(alpha)
 ub <- curveMaxFP(stat[o], thr)
-K <- 50
+K <- 5000
 plot(1:K, 1:K - ub[1:K], t = 's', col = "purple",
-     ylab = "Lower bound on the number of false positives in selection")
+     ylab = "Lower bound on the number of true positives in selection")
 abline(a = 0, b = 1, lty = 2)
 ```
 
@@ -157,7 +171,7 @@ abline(a = 0, b = 1, lty = 2)
 
 ### 2 - User interaction
 
-The usefulness of post hoc bounds for interactive data analysis can be illustrated by the volcano plot below. In this plot, each gene is represented as a data point in the (group difference, signficance space). More precisely, we plot the $p$-value of each gene (using a $-log_10$ scale, so that interesting genes are at the top), as a function of the difference between the mean expression level in both groups.
+The usefulness of post hoc bounds for interactive data analysis can be illustrated by the volcano plot below. In this plot, each gene is represented as a data point in the (group difference, signficance space). More precisely, we plot the $p$-value of each gene (using a $-log_{10}$ scale, so that interesting genes are at the top), as a function of the difference between the mean expression level in both groups.
 
 Below, the default selection consists of the  `r nBH` genes are called differentially expressed at a False Discovery Rate (FDR) of $\alpha = `r alpha`$. If one is interested 
 
@@ -211,10 +225,11 @@ output$plot <- renderPlotly({
 }) 
 
 output$bound <- renderText({
-  msg <- sprintf("Default selection: BH procedure at level %s for FDR control", alpha)
   d <- event_data("plotly_selected")
   mm <- numeric(0L)
+  msg <- ""
   if (is.null(d)) {
+    msg <- sprintf("Default selection: BH procedure at level %s for FDR control\n", alpha)
     mm <- which(datly[["adjp.BH"]] <= alpha)
   } else {
     mm <- match(d$key, datly[["id"]])
