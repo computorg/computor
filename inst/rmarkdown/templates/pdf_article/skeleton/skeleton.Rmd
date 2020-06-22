@@ -1,15 +1,15 @@
 ---
-title: "Template for contribution to an hypothetical statistical journal with dynamic content"
+title: "Templates for static contributions (PDF) to Computo"
 subtitle: "PDF output"
 author: "Author names"
 date: "`r Sys.Date()`"
-output: epiR::pdf_article
+output: computoR::pdf_article
 bibliography: skeleton.bib
 link-citations: yes
 ---
 
 ```{r setup, include=FALSE}
-library(epiR)
+library(computoR)
 # invalidate cache when the package version changes
 knitr::opts_chunk$set(tidy = FALSE)
 options(htmltools.dir.version = FALSE)

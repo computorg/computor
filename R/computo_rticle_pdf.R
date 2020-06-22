@@ -3,7 +3,7 @@
 #' A template for creating HTML articles according to the our futur format.
 #'
 #' @inheritParams rmarkdown::pdf_document
-#' @rdname epiR_article
+#' 
 #' @export
 pdf_article <- function(...) {
 

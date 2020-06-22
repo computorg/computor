@@ -1,18 +1,19 @@
-Package: epiR
-Title: Templates for interactive online contributions
-Version: 0.0.0.9000
+Package: computoR
+Title: Templates for static and interactive online contributions to Computo
+Version: 0.0.1.9000
 Authors@R: c(
-  person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inra.fr",
+  person("Julien", "Chiquet", role = c("aut", "cre"), email = "julien.chiquet@inrae.fr",
       comment = c(ORCID = "0000-0002-3629-3429")),
   person("Pierre", "Neuvial", role = "aut", email = "pierre.neuvial@math.univ-toulouse.fr"),
   person("Robin", "Genuer", role = "aut", email = "robin.genuer@u-bordeaux.fr")
   )
-Description: Provides (R)markdown templates to write papers in an hypothetical statistical journal, in a dynamic/interactive perspective.
+Description: Provides (R)markdown templates to write papers in Computo, in a dynamic/interactive perspective.
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 7.1.0
 License: GPL-3 | file LICENSE
 Imports: 
     formatR,
     knitr,
-    rmarkdown
+    rmarkdown,
+    distill

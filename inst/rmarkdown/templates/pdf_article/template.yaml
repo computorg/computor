@@ -1,4 +1,4 @@
-name: epiR PDF template
+name: Computo PDF template
 description: >
-   Template for creating an article for submission to epiR
+   Template for creating a PDF article for submission to epiR
 create_dir: FALSE
