@@ -1,9 +1,9 @@
 ---
 title: "Templates for static and interactive online contributions to Computo"
-subtitle: "HTML output"
+subtitle: "Handle R, Python and/or Julia code"
 author: "Author names"
 date: "`r Sys.Date()`"
-output: computoR::html_article
+output: computoR::article
 bibliography: skeleton.bib
 link-citations: yes
 ---
@@ -17,11 +17,13 @@ options(htmltools.dir.version = FALSE)
 
 # Introduction
 
-The goal of this package is to produce both PDF and HTML output with similar styles from the same R Markdown document.
+The goal of this package is to provide a template for contribution to the **Computo** Journal.
+
+All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown
 
 # References
 
-References can be displayed as margin notes for HTML output. For example, we can cite R here [@R-base].
+References are displayed as margin notes. For example, we can cite R here [@R-base].
 
 ```{r bib, include=FALSE}
 # create a bib file for the R packages used in this document
