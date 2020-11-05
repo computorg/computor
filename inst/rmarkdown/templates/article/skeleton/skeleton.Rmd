@@ -13,7 +13,7 @@ library(computoR)
 library(reticulate)
 use_virtualenv("computor-skeleton")
 # invalidate cache when the package version changes
-knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8)
+knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8, echo = TRUE)
 options(htmltools.dir.version = FALSE)
 ```
 
@@ -21,18 +21,19 @@ options(htmltools.dir.version = FALSE)
 
 The goal of this package is to provide a template for contribution to the **Computo** Journal.
 
-All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown
+All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown.
 
 # Using python
 
 Firt make sure (here, in R) that the required python modules are available
 
-```{r install-python-modules, eval=TRUE}
+```{r install-python-modules, eval=TRUE, results="hide"}
 py_module_available("seaborn") || py_install("seaborn")
 py_module_available("pandas") || py_install("pandas")
 py_module_available("matplotlib") || py_install("matplotlib")
 ```
 
+Example of python code and associated output:
 
 ```{python, echo = TRUE}
 import pandas as pd
