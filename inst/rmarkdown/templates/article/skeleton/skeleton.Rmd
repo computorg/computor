@@ -11,6 +11,7 @@ link-citations: yes
 ```{r setup, include=FALSE}
 library(computoR)
 library(reticulate)
+use_virtualenv("computor-skeleton")
 # invalidate cache when the package version changes
 knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8)
 options(htmltools.dir.version = FALSE)
@@ -27,8 +28,9 @@ All submission should be made in Rmarkdown. Both `R` and `Python` are natively s
 Firt make sure (here, in R) that the required python modules are available
 
 ```{r install-python-modules, eval=FALSE}
-py_module_available("nilearn") || py_install("nilearn")
+py_module_available("seaborn") || py_install("seaborn")
 py_module_available("pandas") || py_install("pandas")
+py_module_available("matplotlib") || py_install("matplotlib")
 ```
 
 
