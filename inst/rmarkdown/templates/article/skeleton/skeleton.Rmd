@@ -27,7 +27,7 @@ All submission should be made in Rmarkdown. Both `R` and `Python` are natively s
 
 Firt make sure (here, in R) that the required python modules are available
 
-```{r install-python-modules, eval=FALSE}
+```{r install-python-modules, eval=TRUE}
 py_module_available("seaborn") || py_install("seaborn")
 py_module_available("pandas") || py_install("pandas")
 py_module_available("matplotlib") || py_install("matplotlib")
