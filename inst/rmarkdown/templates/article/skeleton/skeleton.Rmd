@@ -10,8 +10,6 @@ link-citations: yes
 
 ```{r setup, include=FALSE}
 library(computoR)
-library(reticulate)
-use_virtualenv("computor-skeleton")
 # invalidate cache when the package version changes
 knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8, echo = TRUE)
 options(htmltools.dir.version = FALSE)
@@ -24,6 +22,14 @@ The goal of this package is to provide a template for contribution to the **Comp
 All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown.
 
 # Using python
+
+The R package [reticulate](https://cran.r-project.org/package=reticulate) package includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
+Below we demonstrate a small subset of the available functionalities. We refer to the vignette [R Markdown Python Engine](https://cran.r-project.org/web/packages/reticulate/vignettes/r_markdown.html) for a more detailed description.
+
+```{r}
+library(reticulate)
+use_virtualenv("computor-skeleton")
+```
 
 Firt make sure (here, in R) that the required python modules are available
 
@@ -53,6 +59,33 @@ plt.figure()
 sns.swarmplot(x="measurement", y="value", hue="species", palette=["r", "c", "y"], data=iris)
 plt.show()
 ```
+
+## Communication between R and python chunks
+
+All objects created within Python chunks are available to R using the `py` object exported by the reticulate package, e.g.:
+
+```{r}
+head(py$iris)
+```
+
+Conversely, all objects created within R are available to Pytho using the `r` object exported by the reticulate:
+
+First, let us create an object within R:
+
+```{r}
+data(volcano)
+volcano[1:4, 1:4]
+```
+
+This object is accessible from Python:
+
+```{python}
+print(r.volcano)
+```
+
+
+
+
 
 # References
 
