@@ -86,6 +86,37 @@ print(r.volcano)
 
 
 
+# Julia
+
+The following examples are taken from https://cran.r-project.org/web/packages/JuliaCall/vignettes/Julia_in_RMarkdown.html
+
+## Use JuliaCall as Julia Engine in R Markdown
+
+To use `JuliaCall` package for julia engine in R Markdown document, just
+set the language of the code chunk to be `julia`.
+
+```{julia, echo = TRUE}
+import Pkg; Pkg.add("Plots")
+using Plots
+gr(); plot(Plots.fakedata(50,5),w=3)
+```
+
+## Communication between R and julia chunks
+
+You can also get access julia variables in R code chunks using `JuliaCall`
+
+Define `a` in julia:
+
+```{julia}
+a = sqrt(2);
+```
+
+Access it from R:
+
+```{r}
+library("JuliaCall")
+julia_eval("a")
+```
 
 # References
 
