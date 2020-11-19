@@ -1,6 +1,5 @@
 ---
-title: "Templates for contributions to Computo"
-subtitle: "Handle R, Python and/or Julia code"
+title: "Rmarkdown template for submissions to Computo"
 author: "Author names"
 date: "`r Sys.Date()`"
 output: computoR::article
@@ -9,121 +8,79 @@ link-citations: yes
 ---
 
 ```{r setup, include=FALSE}
-library(computoR)
-# invalidate cache when the package version changes
+library("computoR")
 knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8, echo = TRUE)
 options(htmltools.dir.version = FALSE)
 ```
 
 # Introduction
 
-The goal of this package is to provide a template for contribution to the **Computo** Journal.
+This document provides a basic Rmarkdown^[rmarkdown.rstudio.com] template for contributions to the **Computo** Journal, possibly including R code. Other templates are provided for contributions including python and Julia code:
 
-All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown.
+- Rmarkdown templates to include python *and/or* Julia *and/or* R code: **TODO!**
+- Jupyter^[https://jupyter.org/] templates to include python *or* Julia code: **TODO!**
 
-# Using python
+# Distill for R Markdown
 
-The R package [reticulate](https://cran.r-project.org/package=reticulate) package includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
-Below we demonstrate a small subset of the available functionalities. We refer to the vignette [R Markdown Python Engine](https://cran.r-project.org/web/packages/reticulate/vignettes/r_markdown.html) for a more detailed description.
+This template is based on [Distill for R Markdown](https://rstudio.github.io/distill/) [@allaire2018distill]:
 
-```{r}
-library(reticulate)
-use_virtualenv("computor-skeleton")
+> Distill for R Markdown is a web publishing format optimized for scientific and technical communication. Distill articles include:
+
+> -   Reader-friendly typography that adapts well to mobile devices.
+> -   Features essential to technical writing like LaTeX math, citations, and footnotes.
+> -   Flexible figure layout options (e.g. displaying figures at a larger width than the article text).
+> -   Attractively rendered tables with optional support for pagination.
+> -   Support for a wide variety of diagramming tools for illustrating concepts.
+> -   The ability to incorporate JavaScript and D3-based interactive visualizations.
+> -   A variety of ways to publish articles, including support for publishing collections or articles as a Distill website.
+
+> Distill for R Markdown is based on the [Distill web framework](https://github.com/distillpub/template), which was originally created for use in the Distill Machine Learning Journal. Distill for R Markdown combines the technical authoring features of Distill with [R Markdown](https://rmarkdown.rstudio.com/), enabling a fully reproducible workflow based on literate programming.
+
+# Features
+
+The most basic features are described below. For more advanced features, we refer to the  [Distill for R Markdown](https://rstudio.github.io/distill/) documentation.
+
+## RMarkdown
+
+Markdown is a simple formatting syntax for authoring HTML, PDF documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+To render the document as html, When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
+
+## Mathematical formulae
+
+$\LaTeX$ code is natively supported, which makes it possible to use mathematical formulae:
+
+$$
+f(x_1, \dots, x_n; \mu, \sigma^2) = 
+\frac{1}{\sigma \sqrt{2\pi}} \exp{\left(- \frac{1}{2\sigma^2}\sum_{i=1}^n(x_i - \mu)^2\right)}
+$$
+
+## R code
+
+You can embed an R code chunk like this:
+
+```{r cars}
+knitr::kable(summary(cars))
 ```
 
-Firt make sure (here, in R) that the required python modules are available
+## Python and Julia code
 
-```{r install-python-modules, eval=TRUE, results="hide"}
-py_module_available("seaborn") || py_install("seaborn")
-py_module_available("pandas") || py_install("pandas")
-py_module_available("matplotlib") || py_install("matplotlib")
+> See dedidated template!  **TODO**
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+library("ggplot2")
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point() +
+  geom_smooth()
 ```
 
-Example of python code and associated output:
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
-```{python, echo = TRUE}
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+## References
 
-sns.set(style="whitegrid", palette="muted")
-
-# Load the example iris dataset
-iris = sns.load_dataset("iris")
-
-# "Melt" the dataset to "long-form" or "tidy" representation
-iris = pd.melt(iris, "species", var_name="measurement")
-plt.figure()
-
-# Draw a categorical scatterplot to show each observation
-sns.swarmplot(x="measurement", y="value", hue="species", palette=["r", "c", "y"], data=iris)
-plt.show()
-```
-
-## Communication between R and python chunks
-
-All objects created within Python chunks are available to R using the `py` object exported by the reticulate package, e.g.:
-
-```{r}
-head(py$iris)
-```
-
-Conversely, all objects created within R are available to Pytho using the `r` object exported by the reticulate:
-
-First, let us create an object within R:
-
-```{r}
-data(volcano)
-volcano[1:4, 1:4]
-```
-
-This object is accessible from Python:
-
-```{python}
-print(r.volcano)
-```
-
-
-
-
-# Julia
-
-The following examples are taken from https://cran.r-project.org/web/packages/JuliaCall/vignettes/Julia_in_RMarkdown.html
-
-## Use JuliaCall as Julia Engine in R Markdown
-
-To use `JuliaCall` package for julia engine in R Markdown document, just
-set the language of the code chunk to be `julia`.
-
-```{julia, echo = TRUE}
-import Pkg; Pkg.add("Plots")
-using Plots
-gr(); plot(Plots.fakedata(50,5),w=3)
-```
-
-## Communication between R and julia chunks
-
-You can also get access julia variables in R code chunks using `JuliaCall`
-
-Define `a` in julia:
-
-```{julia}
-a = sqrt(2);
-```
-
-Access it from R:
-
-```{r}
-library("JuliaCall")
-julia_eval("a")
-```
-
-# References
-
-References are displayed as margin notes. For example, we can cite R here [@R-base].
-
-```{r bib, include=FALSE}
-# create a bib file for the R packages used in this document
-knitr::write_bib('base', file = 'skeleton.bib')
-```
+References are displayed as footnotes using bibtex, e.g. [@computo]. The bibliographic information is automatically retrieved from the `.bib` file specified in the header of this document (here: `skeleton.bib`).
 
