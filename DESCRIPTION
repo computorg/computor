@@ -17,4 +17,5 @@ Imports:
     knitr,
     rmarkdown,
     distill,
+    usethis,
     reticulate
