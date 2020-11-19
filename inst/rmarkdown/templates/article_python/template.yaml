@@ -1,0 +1,4 @@
+name: Computo HTML template - Python code
+description: >
+   Rmarkdown template for creating an HTML article for submission to Computo - example including Python code
+create_dir: FALSE

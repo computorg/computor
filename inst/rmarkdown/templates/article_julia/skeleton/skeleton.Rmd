@@ -1,5 +1,6 @@
 ---
-title: "Rmarkdown + julia template for contributions to Computo"
+title: "Rmarkdown template for contribution to Computo"
+subtitle: "Example including Julia code only"
 author: "the Computo team"
 date: "`r Sys.Date()`"
 output: computoR::article

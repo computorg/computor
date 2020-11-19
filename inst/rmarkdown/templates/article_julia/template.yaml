@@ -1,0 +1,4 @@
+name: Computo HTML template - Julia code
+description: >
+   Rmarkdown template for creating an HTML article for submission to Computo - example including Julia code
+create_dir: FALSE
