@@ -14,7 +14,7 @@ library(reticulate)
 reticulate::use_virtualenv('computoRticle')
 reticulate::py_config()
 # invalidate cache when the package version changes
-knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8)
+knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8, echo = TRUE)
 options(htmltools.dir.version = FALSE)
 ```
 
@@ -27,9 +27,27 @@ py_module_available("seaborn") || py_install("seaborn")
 
 The goal of this package is to provide a template for contribution to the **Computo** Journal.
 
-All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown
+All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown.
 
-# Use foreign langage
+# Using python
+
+The R package [reticulate](https://cran.r-project.org/package=reticulate) package includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
+Below we demonstrate a small subset of the available functionalities. We refer to the vignette [R Markdown Python Engine](https://cran.r-project.org/web/packages/reticulate/vignettes/r_markdown.html) for a more detailed description.
+
+```{r}
+library(reticulate)
+use_virtualenv("computor-skeleton")
+```
+
+Firt make sure (here, in R) that the required python modules are available
+
+```{r install-python-modules, eval=TRUE, results="hide"}
+py_module_available("seaborn") || py_install("seaborn")
+py_module_available("pandas") || py_install("pandas")
+py_module_available("matplotlib") || py_install("matplotlib")
+```
+
+Example of python code and associated output:
 
 
 ```{python, echo = TRUE}
@@ -49,6 +67,64 @@ plt.figure()
 # Draw a categorical scatterplot to show each observation
 sns.swarmplot(x="measurement", y="value", hue="species", palette=["r", "c", "y"], data=iris)
 plt.show()
+```
+
+## Communication between R and python chunks
+
+All objects created within Python chunks are available to R using the `py` object exported by the reticulate package, e.g.:
+
+```{r}
+head(py$iris)
+```
+
+Conversely, all objects created within R are available to Pytho using the `r` object exported by the reticulate:
+
+First, let us create an object within R:
+
+```{r}
+data(volcano)
+volcano[1:4, 1:4]
+```
+
+This object is accessible from Python:
+
+```{python}
+print(r.volcano)
+```
+
+
+
+
+# Julia
+
+The following examples are taken from https://cran.r-project.org/web/packages/JuliaCall/vignettes/Julia_in_RMarkdown.html
+
+## Use JuliaCall as Julia Engine in R Markdown
+
+To use `JuliaCall` package for julia engine in R Markdown document, just
+set the language of the code chunk to be `julia`.
+
+```{julia, echo = TRUE}
+import Pkg; Pkg.add("Plots")
+using Plots
+gr(); plot(Plots.fakedata(50,5),w=3)
+```
+
+## Communication between R and julia chunks
+
+You can also get access julia variables in R code chunks using `JuliaCall`
+
+Define `a` in julia:
+
+```{julia}
+a = sqrt(2);
+```
+
+Access it from R:
+
+```{r}
+library("JuliaCall")
+julia_eval("a")
 ```
 
 # References
