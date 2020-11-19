@@ -1,6 +1,6 @@
 ---
 title: "Rmarkdown template for submissions to Computo"
-author: "Author names"
+author: "the Computo team"
 date: "`r Sys.Date()`"
 output: computoR::article
 bibliography: skeleton.bib
@@ -15,7 +15,7 @@ options(htmltools.dir.version = FALSE)
 
 # Introduction
 
-This document provides a basic Rmarkdown^[rmarkdown.rstudio.com] template for contributions to the **Computo** Journal, possibly including R code. Other templates are provided for contributions including python and Julia code:
+This document provides a Rmarkdown^[rmarkdown.rstudio.com] template for contributions to the **Computo** Journal, possibly including R code. Other templates are provided for contributions including python and Julia code:
 
 - Rmarkdown templates to include python *and/or* Julia *and/or* R code: **TODO!**
 - Jupyter^[https://jupyter.org/] templates to include python *or* Julia code: **TODO!**

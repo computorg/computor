@@ -1,0 +1,86 @@
+---
+title: "Rmarkdown + python template for contributions to Computo"
+author: "the Computo team"
+date: "`r Sys.Date()`"
+output: computoR::article
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library("computoR")
+knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8, echo = TRUE)
+options(htmltools.dir.version = FALSE)
+```
+
+# Introduction
+
+This document provides a Rmarkdown^[rmarkdown.rstudio.com] template for contributions to the **Computo** Journal. It focuses on the *integration of Python code* (possibly together with R code). Please refer to the generic template `skeleton.Rmd` for general instructions. 
+
+
+The R package [reticulate](https://cran.r-project.org/package=reticulate) package [@R-reticulate] includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
+Below we demonstrate a small subset of the available functionalities. We refer to the vignette [R Markdown Python Engine](https://cran.r-project.org/web/packages/reticulate/vignettes/r_markdown.html) for a more detailed description.
+
+# Setup
+
+```{r load-reticulate}
+library("reticulate")
+use_virtualenv("computor-skeleton")
+```
+
+Firt make sure (here, in R) that the required python modules are available
+
+```{r install-python-modules, eval=TRUE, results="hide"}
+py_module_available("seaborn") || py_install("seaborn")
+py_module_available("pandas") || py_install("pandas")
+py_module_available("matplotlib") || py_install("matplotlib")
+```
+
+# Using python
+
+Example of python code and associated output:
+
+```{python iris-python, echo = TRUE}
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.set(style="whitegrid", palette="muted")
+
+# Load the example iris dataset
+iris = sns.load_dataset("iris")
+
+# "Melt" the dataset to "long-form" or "tidy" representation
+iris = pd.melt(iris, "species", var_name="measurement")
+plt.figure()
+
+# Draw a categorical scatterplot to show each observation
+sns.swarmplot(x="measurement", y="value", hue="species", palette=["r", "c", "y"], data=iris)
+plt.show()
+```
+
+# Communication between R and python chunks
+
+All objects created within Python chunks are available to R using the `py` object exported by the reticulate package, e.g.:
+
+```{r iris-r, echo=TRUE}
+rmarkdown::paged_table(py$iris)
+```
+
+Conversely, all objects created within R are available to Pytho using the `r` object exported by the reticulate:
+
+First, let us create an object within R:
+
+```{r rvolcano-r, echo=TRUE}
+data(volcano)
+```
+
+```{r volcano-table}
+rmarkdown::paged_table(as.data.frame(volcano))
+```
+
+This object is accessible from Python:
+
+```{python volcano-python, echo=TRUE}
+print(r.volcano)
+```
