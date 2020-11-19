@@ -18,7 +18,7 @@ options(htmltools.dir.version = FALSE)
 This document provides a Rmarkdown^[rmarkdown.rstudio.com] template for contributions to the **Computo** Journal. It focuses on the *integration of Python code* (possibly together with R code). Please refer to the generic template `skeleton.Rmd` for general instructions. 
 
 
-The R package [reticulate](https://cran.r-project.org/package=reticulate) package [@R-reticulate] includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
+The R package [reticulate](https://cran.r-project.org/package=reticulate) [@R-reticulate] includes a Python engine for R Markdown that enables easy interoperability between Python and R chunks.
 Below we demonstrate a small subset of the available functionalities. We refer to the vignette [R Markdown Python Engine](https://cran.r-project.org/web/packages/reticulate/vignettes/r_markdown.html) for a more detailed description.
 
 # Setup
@@ -67,7 +67,7 @@ All objects created within Python chunks are available to R using the `py` objec
 rmarkdown::paged_table(py$iris)
 ```
 
-Conversely, all objects created within R are available to Pytho using the `r` object exported by the reticulate:
+Conversely, all objects created within R are available from Python using the `r` object exported by the reticulate:
 
 First, let us create an object within R:
 
