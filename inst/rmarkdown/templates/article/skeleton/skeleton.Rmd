@@ -8,13 +8,19 @@ bibliography: skeleton.bib
 link-citations: yes
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 library(computoR)
 library(reticulate)
-use_python("/home/jchiquet/anaconda3/bin/python")
+reticulate::use_virtualenv('computoRticle')
+reticulate::py_config()
 # invalidate cache when the package version changes
 knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8)
 options(htmltools.dir.version = FALSE)
+```
+
+```{r install-python-modules, message = FALSE}
+py_module_available("pandas") || py_install("pandas")
+py_module_available("seaborn") || py_install("seaborn")
 ```
 
 # Introduction
@@ -24,6 +30,7 @@ The goal of this package is to provide a template for contribution to the **Comp
 All submission should be made in Rmarkdown. Both `R` and `Python` are natively supported. You may use any other computer language (such as Julia) if you manage to render your Rmarkdown
 
 # Use foreign langage
+
 
 ```{python, echo = TRUE}
 import pandas as pd
