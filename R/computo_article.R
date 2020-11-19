@@ -12,44 +12,25 @@
 #'   
 #' @export
 article <- function(
-                    # toc = TRUE,
-                    # toc_depth = 3,
-                    # fig_width = 6.5,
-                    # fig_height = 4,
-                    # fig_retina = 2,
-                    # fig_caption = TRUE,
-                    # dev = "png",
-                    # smart = TRUE,
-                    # self_contained = TRUE,
-                    # mathjax = "default",
-                    # extra_dependencies = NULL,
-                    # css = NULL,
-                    # includes = NULL,
-                    # keep_md = FALSE,
-                    # lib_dir = NULL,
-                    # md_extensions = NULL,
-                    # pandoc_args = NULL,
+                    toc = TRUE,
+                    toc_depth = 3,
+                    fig_width = 6.5,
+                    fig_height = 4,
+                    fig_retina = 2,
+                    fig_caption = TRUE,
+                    dev = "png",
+                    smart = TRUE,
+                    self_contained = TRUE,
+                    mathjax = "default",
+                    extra_dependencies = NULL,
+                    css = NULL,
+                    includes = NULL,
+                    keep_md = FALSE,
+                    lib_dir = NULL,
+                    md_extensions = NULL,
+                    pandoc_args = NULL,
                     ...) {
 
-  toc <- TRUE
-  toc_depth <- 3
-  fig_width <- 6.5
-  fig_height <- 4
-  fig_retina <- 2
-  fig_caption <- TRUE
-  dev <- "png"
-  smart <- TRUE
-  self_contained <- TRUE
-  mathjax <- "default"
-  extra_dependencies <- NULL
-  css <- NULL
-  includes <- NULL
-  keep_md <- FALSE
-  lib_dir <- NULL
-  md_extensions <- NULL
-  pandoc_args <- NULL
-  
-  
   distill::distill_article(toc = toc,
                            toc_depth = toc_depth,
                            fig_width = fig_width,
