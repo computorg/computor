@@ -1,0 +1,54 @@
+---
+title: "Rmarkdown + julia template for contributions to Computo"
+author: "the Computo team"
+date: "`r Sys.Date()`"
+output: computoR::article
+bibliography: skeleton.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+library("computoR")
+knitr::opts_chunk$set(tidy = FALSE, fig.width = 8, fig.height = 8, echo = TRUE)
+options(htmltools.dir.version = FALSE)
+```
+
+# Introduction
+
+This document provides a Rmarkdown^[rmarkdown.rstudio.com] template for contributions to the **Computo** Journal. It focuses on the *integration of julia code* (possibly together with R code). Please refer to the generic template `skeleton.Rmd` for general instructions. 
+
+
+The R package [JuliaCall](https://cran.r-project.org/package=JuliaCall) package [@R-reticulate] includes a julia engine for R Markdown. The examples below are taken from the [Julia in RMarkdown](https://cran.r-project.org/web/packages/JuliaCall/vignettes/Julia_in_RMarkdown.html) vignette.
+
+
+# Using Julia
+
+## Use JuliaCall as Julia Engine in R Markdown
+
+To use `JuliaCall` package for julia engine in R Markdown document, just
+set the language of the code chunk to be `julia`.
+
+```{julia, echo = TRUE}
+import Pkg; Pkg.add("Plots")
+using Plots
+gr(); plot(Plots.fakedata(50,5),w=3)
+```
+
+**NOTE: as of Nov 19, 2020 the plot does not show up on the rendered document, see [Issue #1](https://github.com/computorg/computor/issues/1)**
+
+# Communication between R and julia chunks
+
+All objects created within Julia chunks are available to R using the `julia_eval` function. For example, after defining `a` in julia:
+
+```{julia}
+a = sqrt(2);
+```
+
+we can access it from R:
+
+```{r}
+library("JuliaCall")
+julia_eval("a")
+```
+
+
