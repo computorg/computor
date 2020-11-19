@@ -2,5 +2,7 @@
 
 export(article)
 export(computo_website)
+export(github_setting)
 import(distill)
 import(reticulate)
+import(usethis)
