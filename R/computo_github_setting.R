@@ -16,6 +16,6 @@ github_setting <- function() {
   if (!file.exists("binder/install.R")) download.file(
     "https://raw.githubusercontent.com/computorg/actions/main/install.R",
     "binder/install.R")
-  usethis::use_github_action("computorticle_action.yaml",
-                             url = "https://raw.githubusercontent.com/computorg/actions/main/")
+  usethis::use_github_action("computorticle_action",
+                             url = "https://raw.githubusercontent.com/computorg/actions/main/computorticle_action.yaml")
 }
