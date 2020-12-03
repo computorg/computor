@@ -1,0 +1,21 @@
+---
+title: "Introduction to the computorg package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{introduction}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(computoR)
+```
+
+BLabla, based on distill essentially + auxiliary functions to create a article and github repo ready for submission to [computo](https://computo.sfds.asso.fr).
