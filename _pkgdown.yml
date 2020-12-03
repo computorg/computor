@@ -4,10 +4,14 @@ navbar:
   left:
   - text: Get started
     href: articles/introduction.html
-  - text: Examples
-    href: articles/article_R.html
-    href: articles/article_python.html
-    href: articles/article_julia.html
+  - text: "Examples of format"
+    menu:
+    - text: "Rmarkdown template for article including R code only"
+      href: articles/article_R.html
+    - text: "Rmarkdown template for article including python code only"
+      href: articles/article_python.html
+    - text: "Rmarkdown template for article including Julia code only"
+      href: articles/article_julia.html
   - text: Reference
     href: reference/index.html
   right:

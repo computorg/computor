@@ -36,3 +36,6 @@ vignettes/*.pdf
 rsconnect/
 .Rproj.user
 inst/doc
+
+# local output of pkgdown
+docs
